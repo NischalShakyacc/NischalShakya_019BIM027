@@ -1,18 +1,3 @@
-/*child(charlesI, jamesI).
-child(elizabeth, jamesI).
-child(catherine, charlesI).
-child(charlesII, charlesI).
-child(jamesII, charlesI).
-child(sophia, elizabeth).
-child(georgeI, sophia).
-
-grandparent(GP, GC) :- child(GC, P), child(P, GP).
-*/
-
-/*
-(child(X, Y) :- parent(Y, X)) :- (grandparent(Z,X) :- parent(Z,Y)).
-*/
-
 parent(jamesI, charlesI).
 parent(jamesI, elizabeth).
 parent(charlesI, catherine).
@@ -32,3 +17,9 @@ siblings(S, D) :- parent(P, S), parent(P, D).
 
 /* Brother Sister */
 brothersister(S, D) :- siblings(X, Y), parent(X, S), parent(Y, D).
+
+list_siblings(Person, Siblings) :-
+    findall(Sibling, (siblings(Person, Sibling), Person \= Sibling), Siblings).
+
+list_brothers_sisters(Person, BrothersSisters) :-
+    findall(BrothersSister, (brothersister(Person, BrothersSister), Person \= BrothersSister), BrothersSisters).

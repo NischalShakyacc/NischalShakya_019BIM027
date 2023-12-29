@@ -1,16 +1,8 @@
 /* Ann hates white. */
 hates(ann, white).
 
-/* Susan wears shoes and dress of same color. */
-shoes(susan, ColorX) :- dress(susan, ColorX).
+hates(Person, Color) :- \+ (dress(Person, Color), shoes(Person, Color)).
+hates(Person, Color) :- \+ dress(Person, Color).
+hates(Person, Color) :- \+ shoes(Person, Color).
 
-/* Alice has white shoes. */
-shoes(alice, white).
-
-/* Alice and Ann's shoes and dress have different colors */
-shoes(alice, ColorY) :- not(dress(alice, ColorY)).
-shoes(ann, ColorY) :- not(dress(ann, ColorY)).
-
-
-dress(Person, Color) :- shoes(Person, Color).
-color_diff(Person1, Person2) :- shoes(Person1, Color1), shoes(Person2, Color2), Color1 \= Color2, dress(Person1, Color3), dress(Person2, Color4), Color3 \= Color4.
+\+ hates(Person, Color) :- (dress(Person, Color), shoes(Person, Color)).
