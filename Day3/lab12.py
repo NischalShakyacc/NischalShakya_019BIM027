@@ -1,58 +1,71 @@
-class WaterJugProblem:
-    def __init__(self, jug1_capacity, jug2_capacity, target_amount):
-        self.jug1_capacity = jug1_capacity
-        self.jug2_capacity = jug2_capacity
-        self.target_amount = target_amount
-        self.current_state = {'jug1': 0, 'jug2': 0}
-        self.visited_states = set()
+from collections import deque
+def Solution(a, b, target):
+	m = {}
+	isSolvable = False
+	path = []
 
-    def fill_jug1(self):
-        return {'jug1': self.jug1_capacity, 'jug2': self.current_state['jug2']}
+	q = deque()
 
-    def fill_jug2(self):
-        return {'jug1': self.current_state['jug1'], 'jug2': self.jug2_capacity}
+	#Initializing with jugs being empty
+	q.append((0, 0))
 
-    def pour_jug1_to_jug2(self):
-        pour_amount = min(self.current_state['jug1'], self.jug2_capacity - self.current_state['jug2'])
-        return {'jug1': self.current_state['jug1'] - pour_amount, 'jug2': self.current_state['jug2'] + pour_amount}
+	while (len(q) > 0):
 
-    def pour_jug2_to_jug1(self):
-        pour_amount = min(self.current_state['jug2'], self.jug1_capacity - self.current_state['jug1'])
-        return {'jug1': self.current_state['jug1'] + pour_amount, 'jug2': self.current_state['jug2'] - pour_amount}
+		# Current state
+		u = q.popleft()
+		if ((u[0], u[1]) in m):
+			continue
+		if ((u[0] > a or u[1] > b or
+			u[0] < 0 or u[1] < 0)):
+			continue
+		path.append([u[0], u[1]])
 
-    def is_goal_state(self, state):
-        return state['jug1'] == self.target_amount or state['jug2'] == self.target_amount
+		m[(u[0], u[1])] = 1
 
-    def move(self, state):
-        moves = [
-            self.fill_jug1(),
-            self.fill_jug2(),
-            self.pour_jug1_to_jug2(),
-            self.pour_jug2_to_jug1()
-        ]
+		if (u[0] == target or u[1] == target):
+			isSolvable = True
 
-        return [{'new_state': move, 'action': next(key for key, value in move.items() if value != state[key])}
-                for move in moves]
+			if (u[0] == target):
+				if (u[1] != 0):
+					path.append([u[0], 0])
+			else:
+				if (u[0] != 0):
 
-    def plan(self):
-        stack = [{'state': self.current_state, 'actions': []}]
-        self.visited_states.add(str(self.current_state))
+					path.append([0, u[1]])
 
-        while stack:
-            current_state = stack.pop()
+			sz = len(path)
+			for i in range(sz):
+				print("(", path[i][0], ",",
+					path[i][1], ")")
+			break
 
-            if self.is_goal_state(current_state['state']):
-                return current_state['actions']
+		q.append([u[0], b]) # Fill Jug2
+		q.append([a, u[1]]) # Fill Jug1
 
-            possible_moves = self.move(current_state['state'])
-            for move in possible_moves:
-                new_state_string = str(move['new_state'])
-                if new_state_string not in self.visited_states:
-                    stack.append({'state': move['new_state'], 'actions': current_state['actions'] + [move['action']]})
-                    self.visited_states.add(new_state_string)
+		for ap in range(max(a, b) + 1):
+			c = u[0] + ap
+			d = u[1] - ap
 
-        return None
+			if (c == a or (d == 0 and d >= 0)):
+				q.append([c, d])
 
-water_jug_problem = WaterJugProblem(3, 4, 2)
-plan = water_jug_problem.plan()
-print(plan)
+			c = u[0] - ap
+			d = u[1] + ap
+
+			if ((c == 0 and c >= 0) or d == b):
+				q.append([c, d])
+
+		q.append([a, 0])
+
+		q.append([0, b])
+
+	if (not isSolvable):
+		print("Solution not possible")
+
+if __name__ == '__main__':
+
+	Jug1, Jug2, target = 4, 3, 2
+	print("Path from initial state "
+		"to solution state ::")
+
+	Solution(Jug1, Jug2, target)
