@@ -19,5 +19,4 @@ act(state(P1, onfloor, B, H),
 canget(state(_, _, _, has)).
 canget(State1) :- act(State1, _, State2), canget(State2).
 
-
 go :- canget(state(atdoor, onfloor, atwindow, hasnot)).
