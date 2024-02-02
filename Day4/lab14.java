@@ -1,4 +1,4 @@
-public class LogicGateSimulation {
+public class lab14 {
     public static void main(String[] args) {
         // Example usage
         ANDGate andGate = new ANDGate();
